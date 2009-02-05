@@ -19,12 +19,13 @@ function initial() {
         $('body').doubanTopicPopupStyle();
     } else {
         var topic = $('#in_table table.olt tr.pl').find('td:first a');
-        var talk = $('#douban-talk-popup');
 
         topic.click(function() {
-            talk.doubanTopicPopup('toggle', {
-                url: $(this).attr('href')
-            });
+            $('#douban-talk-popup')
+                .doubanTopicPopup({
+                    url: $(this).attr('href'),
+                    open: true
+                });
             return false;
         });
     }
@@ -38,7 +39,7 @@ function inframe() {
 // Popup window
 $.fn.doubanTopicPopup = function(action, options) {
     // Shift arguments if action is ommited
-    if (typeof options == 'undefined') {
+    if (typeof action == 'object') {
         options = action;
         action = 'init';
     }
@@ -46,7 +47,7 @@ $.fn.doubanTopicPopup = function(action, options) {
     // Set options
     options = $.extend({
         url: location.href,
-        open: true
+        open: false
     }, options || {});
 
     // Elements
@@ -54,16 +55,19 @@ $.fn.doubanTopicPopup = function(action, options) {
     var iframe = this.children('iframe');
     // CSS styles
     var popupStyles = {
-        'width': '300px',
+        // 'width': '300px',
+        'width': '100%',
         'height': '300px',
+        'padding': '3px',
         'position': 'fixed',
         'right': '0',
         'bottom': '0',
-        // 'display': 'none',
+        'display': 'none',
         'border': '1px solid #ccc'
     };
     var iframeStyles = {
         'border': 'none',
+        'overflow-x': 'hidden'
     };
 
     // Work by action
@@ -81,7 +85,7 @@ $.fn.doubanTopicPopup = function(action, options) {
             popup = $('<div></div>')
                         .attr('id', 'douban-talk-popup')
                         .css(popupStyles)
-                        .appendTo('body');
+                        .appendTo('#maxw');
             iframe = $('<iframe></iframe>')
                          .attr('id', 'douban-talk-popup-iframe')
                          .attr('src', validate(options.url))
@@ -100,8 +104,8 @@ $.fn.doubanTopicPopup = function(action, options) {
     }
 
     function validate(url) {
-        var topicPattern = /(http:\/\/www\.douban\.com)?\/group\/topic\/\d+\//;
-        if (url.match(topicPattern)) {
+        var topic = /(http:\/\/www\.douban\.com)?\/group\/topic\/\d+\//;
+        if (url.match(topic)) {
             return url + '#douban-talk-popup';
         } else {
             throw new Error("Invalid Topic URL");
@@ -109,19 +113,18 @@ $.fn.doubanTopicPopup = function(action, options) {
     }
 
     function open() {
+        return popup.addClass('popup-open').fadeIn('normal');
     }
 
     function close() {
+        return popup.removeClass('popup-open').fadeOut('normal');
     }
 
     function toggle() {
-        return init();
+        throw new Error("Not Implemented");
     }
-
-    return this;
 };
 
-// Set iframe popup into gtalk style
+// Set iframe popup into talk style
 $.fn.doubanTopicPopupStyle = function() {
-    // return this.empty();
 };

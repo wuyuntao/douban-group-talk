@@ -8,16 +8,13 @@
 // @include         http://www.douban.com/group/topic/*
 // ==/UserScript==
 
-// Set jquery
 var $ = jQuery = unsafeWindow.jQuery;
 var console = unsafeWindow.console || { debug: function() {} };
 
-// Main entry
 $(function() {
-    setTimeout(initial, 0);    // Delay for Mozilla
+    setTimeout(initial, 0);
 });
 
-// Initialize
 function initial() {
     if (inframe()) {
         $('body').doubanTopicPopupStyle();
@@ -35,29 +32,24 @@ function initial() {
     }
 }
 
-// Check if page is in popup
 function inframe() {
     return location.href.match(/#douban\-talk\-popup$/);
 }
 
-// Popup window
 $.fn.doubanTopicPopup = function(action, options) {
-    // Shift arguments if action is ommited
     if (typeof action == 'object') {
         options = action;
         action = 'init';
     }
 
-    // Set options
     options = $.extend({
         url: location.href,
         open: false
     }, options || {});
 
-    // Elements
     var popup = this;
     var iframe = this.children('iframe');
-    // CSS styles
+
     var popupStyles = {
         'background': '#c3d9ff',
         'width': '360px',
@@ -74,7 +66,6 @@ $.fn.doubanTopicPopup = function(action, options) {
         'overflow-x': 'hidden'
     };
 
-    // Work by action
     switch(action) {
         case 'open': return open();
         case 'close': return close();
@@ -85,7 +76,6 @@ $.fn.doubanTopicPopup = function(action, options) {
 
     function init() {
         if (!popup.length) {
-            // Create popup and iframe
             popup = $('<div></div>')
                         .attr('id', 'douban-talk-popup')
                         .css(popupStyles)
@@ -98,10 +88,8 @@ $.fn.doubanTopicPopup = function(action, options) {
                          .css(iframeStyles)
                          .appendTo(popup);
 
-            // Auto open the popup or just initialize
             if (options.open) return open();
         } else {
-            // Update iframe
             iframe.attr('src', validate(options.url));
         }
         return popup;
@@ -129,7 +117,6 @@ $.fn.doubanTopicPopup = function(action, options) {
     }
 };
 
-// Set iframe popup into talk style
 $.fn.doubanTopicPopupStyle = function() {
     var styles =
         'body { font-size: 12px; }' +

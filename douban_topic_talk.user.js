@@ -1,8 +1,11 @@
 // ==UserScript==
-// @name           Douban Talk
-// @namespace      http://blog.luliban.com
-// @include        http://www.douban.com/group/*
-// @include        http://www.douban.com/group/topic/*
+// @name            Douban Topic Talk
+// @description     Open group topics in a gtalk-style popup
+// @version         0.1
+// @author          Wu Yuntao <http://blog.luliban.com>
+// @namespace       http://blog.luliban.com
+// @include         http://www.douban.com/group/*
+// @include         http://www.douban.com/group/topic/*
 // ==/UserScript==
 
 // Set jquery
@@ -57,7 +60,7 @@ $.fn.doubanTopicPopup = function(action, options) {
     // CSS styles
     var popupStyles = {
         'background': '#c3d9ff',
-        'width': '320px',
+        'width': '360px',
         'height': '300px',
         'padding': '3px',
         'position': 'fixed',
@@ -132,14 +135,13 @@ $.fn.doubanTopicPopupStyle = function() {
         'body { font-size: 12px; }' +
         'body > h1 { background: #c3d9ff; font-size: 14px; line-height: 20px; margin: 0; padding: 2px; position: fixed; top: 0; left: 0; right: 0; }' +
         'body img { padding: 2px; }' +
-        'body > .post { font-size: 12px; width: 305px; margin: 5px; padding: 24px 15px 0 0; }' +
+        'body > .post { font-size: 12px; width: 345px; margin: 5px; padding: 24px 15px 0 0; }' +
         '.post span.mn { font-size: 12px; color: #999; display: block; }' +
         '.post span.pl2 { font-size: 12px; color: black; }' +
         '.post .post-icon { float: right; }' +
         '.post .post-body { margin: 3px; padding: 0; }' +
         '.post .post-body .wrc { margin: 5px 0 0; padding: 3px; }' +
-        'body > .reply { width: 300px; margin: 0; padding: 5px 15px 0 5px; border-top: 1px solid #ccc; }' +
-        // '.reply img { padding-left: 10px; }' +
+        'body > .reply { width: 340px; margin: 0; padding: 5px 15px 0 5px; border-top: 1px solid #ccc; }' +
         '.reply span.wrap { background: #fff; }' +
         '.reply .wrap h4 { background: #fff; color: #999; line-height: 16px; margin: 0; padding-bottom: 5px; }' +
         '.reply p.wrc { margin: 0; padding: 0; }' +
@@ -156,8 +158,10 @@ $.fn.doubanTopicPopupStyle = function() {
         .popupTitle()
         .popupPost()
         .popupReply()
+        .popupPaginator()
+        .popupForm()
         .children('#maxw')
-            .hide()
+            .remove()
             .end();
 };
 
@@ -166,7 +170,7 @@ $.fn.popupTitle = function() {
         .find('#maxw > h1')
             .appendTo('body')
             .end();
-}
+};
 
 $.fn.popupPost = function() {
     var post = $('<div></div>')
@@ -215,4 +219,12 @@ $.fn.popupReply = function() {
                    .prependTo(reply);
         return reply
     }
-}
+};
+
+$.fn.popupPaginator = function() {
+    return this;
+};
+
+$.fn.popupForm = function() {
+    return this;
+};

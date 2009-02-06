@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name            Douban Topic Talk
-// @description     Open group topics in a gtalk-style popup
-// @version         0.1
+// @description     Open douban group topics in a popup
+// @version         0.2
 // @author          Wu Yuntao <http://blog.luliban.com>
 // @namespace       http://blog.luliban.com
 // @include         http://www.douban.com/*

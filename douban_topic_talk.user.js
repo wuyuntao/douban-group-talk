@@ -4,8 +4,7 @@
 // @version         0.1
 // @author          Wu Yuntao <http://blog.luliban.com>
 // @namespace       http://blog.luliban.com
-// @include         http://www.douban.com/group/*
-// @include         http://www.douban.com/group/topic/*
+// @include         http://www.douban.com/*
 // ==/UserScript==
 
 var $ = jQuery = unsafeWindow.jQuery;
@@ -19,21 +18,25 @@ function initial() {
     if (inframe()) {
         $('body').doubanTopicPopupStyle();
     } else {
-        var topic = $('#in_table table.olt tr.pl').find('td:first a');
-
-        topic.click(function() {
-            $('#douban-talk-popup')
-                .doubanTopicPopup({
-                    url: $(this).attr('href'),
-                    open: true
-                });
-            return false;
+        $('a').click(function() {
+            var url = $(this).attr('href');
+            if (isValid(url)) {
+                $('#douban-talk-popup')
+                    .doubanTopicPopup({ url: url, open: true });
+                return false;
+            }
         });
     }
 }
 
 function inframe() {
     return location.href.match(/#douban\-talk\-popup$/);
+}
+
+function isValid(url) {
+    var pattern = /(http:\/\/www\.douban\.com)?\/group\/topic\/\d+\//;
+    if (url.match(pattern)) return true;
+    else return false;
 }
 
 $.fn.doubanTopicPopup = function(action, options) {
@@ -53,7 +56,7 @@ $.fn.doubanTopicPopup = function(action, options) {
     var popupStyles = {
         'background': '#c3d9ff',
         'width': '360px',
-        'height': '300px',
+        'height': '360px',
         'padding': '3px',
         'position': 'fixed',
         'right': '0',
@@ -82,7 +85,7 @@ $.fn.doubanTopicPopup = function(action, options) {
                         .appendTo('#maxw');
             iframe = $('<iframe></iframe>')
                          .attr('id', 'douban-talk-popup-iframe')
-                         .attr('src', validate(options.url))
+                         .attr('src', options.url + '#douban-talk-popup')
                          .attr('width', '100%')
                          .attr('height', '100%')
                          .css(iframeStyles)
@@ -93,15 +96,6 @@ $.fn.doubanTopicPopup = function(action, options) {
             iframe.attr('src', validate(options.url));
         }
         return popup;
-    }
-
-    function validate(url) {
-        var topic = /(http:\/\/www\.douban\.com)?\/group\/topic\/\d+\//;
-        if (url.match(topic)) {
-            return url + '#douban-talk-popup';
-        } else {
-            throw new Error("Invalid Topic URL");
-        }
     }
 
     function open() {

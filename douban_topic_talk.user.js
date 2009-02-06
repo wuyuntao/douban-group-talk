@@ -34,7 +34,7 @@ function inframe() {
 }
 
 function isValid(url) {
-    var pattern = /(http:\/\/www\.douban\.com)?\/group\/topic\/\d+\//;
+    var pattern = /(http:\/\/www\.douban\.com)?\/group\/topic\/\d+\/(\?.*)?/;
     if (url.match(pattern)) return true;
     else return false;
 }
@@ -85,7 +85,7 @@ $.fn.doubanTopicPopup = function(action, options) {
                         .appendTo('#maxw');
             iframe = $('<iframe></iframe>')
                          .attr('id', 'douban-talk-popup-iframe')
-                         .attr('src', options.url + '#douban-talk-popup')
+                         .attr('src', format(options.url))
                          .attr('width', '100%')
                          .attr('height', '100%')
                          .css(iframeStyles)
@@ -93,9 +93,13 @@ $.fn.doubanTopicPopup = function(action, options) {
 
             if (options.open) return open();
         } else {
-            iframe.attr('src', validate(options.url));
+            iframe.attr('src', format(options.url));
         }
         return popup;
+    }
+
+    function format(url) {
+        return url + '#douban-talk-popup';
     }
 
     function open() {
@@ -116,13 +120,13 @@ $.fn.doubanTopicPopupStyle = function() {
         'body { font-size: 12px; }' +
         'body > h1 { background: #c3d9ff; font-size: 14px; line-height: 20px; margin: 0; padding: 2px; position: fixed; top: 0; left: 0; right: 0; }' +
         'body img { padding: 2px; }' +
-        'body > .post { font-size: 12px; width: 345px; margin: 5px; padding: 24px 15px 0 0; }' +
+        'body > .post { font-size: 12px; width: 340px; margin: 5px; padding: 24px 20px 0 0; }' +
         '.post span.mn { font-size: 12px; color: #999; display: block; }' +
         '.post span.pl2 { font-size: 12px; color: black; }' +
         '.post .post-icon { float: right; }' +
         '.post .post-body { margin: 3px; padding: 0; }' +
         '.post .post-body .wrc { margin: 5px 0 0; padding: 3px; }' +
-        'body > .reply { width: 340px; margin: 0; padding: 5px 15px 0 5px; border-top: 1px solid #ccc; }' +
+        'body > .reply { width: 335px; margin: 0; padding: 5px 20px 0 5px; border-top: 1px solid #ccc; }' +
         '.reply span.wrap { background: #fff; }' +
         '.reply .wrap h4 { background: #fff; color: #999; line-height: 16px; margin: 0; padding-bottom: 5px; }' +
         '.reply p.wrc { margin: 0; padding: 0; }' +
@@ -130,6 +134,8 @@ $.fn.doubanTopicPopupStyle = function() {
         '.reply .reply-icon { float: left; }' +
         '.reply-even, .reply-even .wrap, .reply-even .wrap h4 { background: #e2edff; }' +
         '.reply-even .reply-icon { float: right; }' +
+        'body > .post-comment { font-size: 12px; width: 340px; margin: 10px; padding: 0 20px 0 0; }' +
+        '.post-comment textarea#last { width: 300px; height: 40px; }' +
         '';
     var sheet = $('<style></style>')
                     .attr('type', 'text/css')
@@ -143,7 +149,15 @@ $.fn.doubanTopicPopupStyle = function() {
         .popupForm()
         .children('#maxw')
             .remove()
+            .end()
+        .find('a')
+            .click(openUrl)
             .end();
+
+    function openUrl() {
+        window.open($(this).attr('href'));
+        return false;
+    }
 };
 
 $.fn.popupTitle = function() {
@@ -198,7 +212,7 @@ $.fn.popupReply = function() {
                    .attr('class', 'reply-icon')
                    .html(table.find('td:first').html())
                    .prependTo(reply);
-        return reply
+        return reply;
     }
 };
 
@@ -207,5 +221,19 @@ $.fn.popupPaginator = function() {
 };
 
 $.fn.popupForm = function() {
-    return this;
+    return this
+        .find('#in_tablem > .wr td.wrtd + td:first div.txd')
+            .addClass('post-comment')
+            .appendTo('body')
+            .find('form')
+                .submit(comment)
+                .end()
+            .end();
+
+    function comment() {
+        $.post('add_comment', $(this).serialize(), function() {
+            location.reload(true);
+        });
+        return false;
+    }
 };
